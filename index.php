@@ -2,9 +2,9 @@
   session_start();
   $monthlist=array("JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER");
   $weeklist=array("SUN","MON","TUE","WED","THU","FRI","SAT");
-  $friend=array("Gaurav","Isha","Aditya","Test");
-  $friendDate=array(13,4,21,15);
-  $friendMonth=array(10,2,4,10);
+  $friend=array();
+  $friendDate=array();
+  $friendMonth=array();
   if(function_exists('date_default_timezone_set')) {
     date_default_timezone_set("Asia/Kolkata");
   }
@@ -12,13 +12,13 @@
   $storeMonth=0;
   $today=1;
   $currentDay=date("d");
-  $found=false;
   if($today==1)
   {
     $storeYear=date("Y");
     $storeMonth=date("m");
     $today++;
   }
+  
   if(isset($_POST['previous']))
   {
     if($storeMonth==1)
@@ -49,16 +49,9 @@
   if(isset($_POST['search'])) 
   {
     $storeYear1 = $_POST['enteryear'];
-    if($storeYear1<=0)
-    {
-      $found = true;
-    }
-    else
-    {
-      $storeYear=$_POST['enteryear'];
-      $storemonth1 = $_POST['entermonth'];
-      $storeMonth=$storemonth1+1;
-    }
+    $storeYear=$_POST['enteryear'];
+    $storemonth1 = $_POST['entermonth'];
+    $storeMonth=$storemonth1+1;
   }
   $day=showDay($storeMonth,$storeYear);
 
@@ -109,25 +102,33 @@
 ?>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "icon" type = "image/png" href = "image/logo.png">
     <title>Calendar</title>
     <link rel="stylesheet" type="text/css" href="index.css">
     <script src="https://kit.fontawesome.com/ab99e84824.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-   
   </head>
   <body>
-  
-
-    <script type="text/javascript">
-      var r = confirm("Happy Diwali!\nDo You want to see FireWork");
-  if (r == true) {
-    window.location.href='index.html'
-  } 
-    </script>
-
-    
+    <?php
+      for ($i=0; $i <count($friend); $i++) 
+      { 
+          if(date("d")==$friendDate[$i] && date("m")==$friendMonth[$i])
+          {
+              $message=$friend[$i];
+              ?>
+               <script>
+                swal({
+                title: "Happy Birthday <?php echo $message?>",
+                text: "May all your wishes come true.\nAlways keep Smiling.",
+                imageUrl: 'image/cake.png'
+                });
+              </script>
+              <?php
+          }
+      }
+      ?>
     <div class="wrapper">
       <header class="page-header">
         <nav>
@@ -140,7 +141,7 @@
               <a href="about.html">About</a>
             </li>
           </ul>
-          <button class="cta-contact">Contact Us</button>
+          <button class="cta-contact" onClick="location.href='https://aditya-pandey.herokuapp.com/'">Portfolio</button>
         </nav>
       </header>
       
@@ -148,7 +149,7 @@
         <div class="container">
           <form action="" method="post">
           <table>
-             <caption><?php echo $monthlist[$storeMonth-1]."\t".$storeYear;?></caption>
+            <caption><?php echo $monthlist[$storeMonth-1]."\t".$storeYear;?></caption>
             <thead>
               <tr>
                 <th scope="col">SUN</th>
@@ -195,8 +196,6 @@
                 }
                 elseif($cweek<=7)
                 {
-                  // $presentDay="#76ACE2";
-                  $holiday="#F73434";
                   if($count==$currentDay && $storeYear==date("Y") && $storeMonth==date("m"))
                   {
                     ?>
@@ -205,18 +204,9 @@
                   }
                   else
                   {
-                    if(($count>=26 && $count<=28) && ($storeMonth==10) )
-                    {
-                      ?>
-                          <td title="Deepawali" bgcolor="<?php echo $holiday;?>" data-label="<?php echo $weeklist[$cweek-1];?>" ><?echo $count;?></td>
+                    ?>
+                    <td data-label="<?php echo $weeklist[$cweek-1];?>" ><?echo $count;?></td>
                     <?php
-                    }
-                    else
-                    {
-                      ?>
-                      <td  data-label="<?php echo $weeklist[$cweek-1];?>" ><?echo $count;?></td>
-                      <?php
-                    }
                   }
                     $count++;
                   
@@ -246,7 +236,7 @@
                 }
                 $run++;
               }?>
-
+              
               <tr>
                  <!-- <th colspan="2"><div class="month"><input type="submit" name="previous" value="Previous" disabled=""></div></th>  -->
                 <td data-label="Select Month" colspan="3"><div class="selectmonth">
@@ -278,11 +268,10 @@
                 </td>
                  <!-- <th colspan="2"><div class="month"><input type="submit" name="next" value="Next" disabled=""></div></th>  -->
               </tr>
-
+              
             </tbody>
-            </form>
+          </form>
           </table>
-          <?php echo "You search $storeMonth, $storeYear";?>
         </div>
       </main>
       <footer class="page-footer">
